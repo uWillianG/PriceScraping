@@ -1,16 +1,25 @@
 from __future__ import annotations
 
-from shopping_assistant.collectors.base import BaseCollector
+from shopping_assistant.collectors.generic_html import GenericHtmlCollector
 from shopping_assistant.models import ProductOffer, compute_discount_percent, to_decimal
 
 
-class MagaluCollector(BaseCollector):
+class MagaluCollector(GenericHtmlCollector):
     store_name = "Magazine Luiza"
+    base_url = "https://www.magazineluiza.com.br"
+    search_url_template = "https://www.magazineluiza.com.br/busca/{query}/"
+    search_encoding = "slug"
+    card_selector = (
+        "[data-testid='product-card'], li[data-testid*='product'], "
+        "div[data-testid*='product'], a[href*='/p/']"
+    )
+    link_selector = "a[href*='/p/'], a[data-testid*='product']"
+    wait_selector = "[data-testid='product-card'], a[href*='/p/']"
+    debug_file = "magalu_last.html"
 
     async def search(self, query: str, category: str | None = None) -> list[ProductOffer]:
         if not self.settings.magalu_search_endpoint:
-            self.logger.info("Magalu search endpoint is not configured")
-            return []
+            return await super().search(query, category)
 
         data = await self.get_json(
             self.settings.magalu_search_endpoint,

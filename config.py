@@ -42,6 +42,8 @@ class Settings:
             "Chrome/125.0.0.0 Safari/537.36"
         ),
     )
+    mercado_livre_access_token: str = os.getenv("MERCADO_LIVRE_ACCESS_TOKEN", "")
+    mercado_livre_use_api: bool = _bool("MERCADO_LIVRE_USE_API", False)
 
     smtp_host: str = os.getenv("SMTP_HOST", "")
     smtp_port: int = int(os.getenv("SMTP_PORT", "587"))
@@ -62,6 +64,9 @@ class Settings:
     amazon_secret_key: str = os.getenv("AMAZON_SECRET_KEY", "")
     amazon_partner_tag: str = os.getenv("AMAZON_PARTNER_TAG", "")
     amazon_marketplace: str = os.getenv("AMAZON_MARKETPLACE", "www.amazon.com.br")
+    amazon_paapi_host: str = os.getenv("AMAZON_PAAPI_HOST", "webservices.amazon.com.br")
+    amazon_paapi_region: str = os.getenv("AMAZON_PAAPI_REGION", "us-east-1")
+    amazon_search_index: str = os.getenv("AMAZON_SEARCH_INDEX", "All")
 
     shopee_partner_id: str = os.getenv("SHOPEE_PARTNER_ID", "")
     shopee_secret_key: str = os.getenv("SHOPEE_SECRET_KEY", "")

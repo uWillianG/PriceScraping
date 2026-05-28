@@ -1,16 +1,25 @@
 from __future__ import annotations
 
-from shopping_assistant.collectors.base import BaseCollector
+from shopping_assistant.collectors.generic_html import GenericHtmlCollector
 from shopping_assistant.models import ProductOffer, compute_discount_percent, to_decimal
 
 
-class CasasBahiaCollector(BaseCollector):
+class CasasBahiaCollector(GenericHtmlCollector):
     store_name = "Casas Bahia"
+    base_url = "https://www.casasbahia.com.br"
+    search_url_template = "https://www.casasbahia.com.br/busca/{query}"
+    search_encoding = "quote_plus"
+    card_selector = (
+        "[data-testid*='product'], div[class*='product'], article, "
+        "a[href*='/p/'], a[href*='produto']"
+    )
+    link_selector = "a[href*='/p/'], a[href*='produto'], a[href*='casasbahia.com.br']"
+    wait_selector = "[data-testid*='product'], a[href*='/p/'], a[href*='produto']"
+    debug_file = "casas_bahia_last.html"
 
     async def search(self, query: str, category: str | None = None) -> list[ProductOffer]:
         if not self.settings.casas_bahia_search_endpoint:
-            self.logger.info("Casas Bahia search endpoint is not configured")
-            return []
+            return await super().search(query, category)
 
         data = await self.get_json(
             self.settings.casas_bahia_search_endpoint,

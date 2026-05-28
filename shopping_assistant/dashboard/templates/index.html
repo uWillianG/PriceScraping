@@ -18,17 +18,23 @@
   {% if search_result.errors %}
     <div class="notice">Some stores could not be checked: {{ search_result.errors }}</div>
   {% endif %}
-  <div class="grid">
-    {% for offer in search_result.ranked_offers[:12] %}
-      <article class="card">
-        {% if offer.image_url %}<img src="{{ offer.image_url }}" alt="">{% endif %}
-        <div class="store">{{ offer.store }}</div>
-        <h3><a href="{{ offer.url }}" target="_blank">{{ offer.title }}</a></h3>
-        <strong>R$ {{ offer.current_price }}</strong>
-        {% if offer.discount_percent %}<span>{{ offer.discount_percent }}% off</span>{% endif %}
-      </article>
-    {% endfor %}
-  </div>
+  {% if search_result.ranked_offers %}
+    <div class="grid">
+      {% for offer in search_result.ranked_offers[:12] %}
+        <article class="card">
+          {% if offer.image_url %}<img src="{{ offer.image_url }}" alt="">{% endif %}
+          <div class="store">{{ offer.store }}</div>
+          <h3><a href="{{ offer.url }}" target="_blank">{{ offer.title }}</a></h3>
+          <strong>R$ {{ offer.current_price }}</strong>
+          {% if offer.discount_percent %}<span>{{ offer.discount_percent }}% off</span>{% endif %}
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="notice">
+      No products were found for this search. If no store error is shown above, try a broader query such as "geladeira" or "sofa".
+    </div>
+  {% endif %}
 </section>
 {% endif %}
 
