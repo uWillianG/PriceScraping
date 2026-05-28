@@ -1,0 +1,163 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, Arial, sans-serif;
+  background: #f6f7f9;
+  color: #17212b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: #0b5cad;
+  text-decoration: none;
+}
+
+.topbar {
+  align-items: center;
+  background: #ffffff;
+  border-bottom: 1px solid #d9dee5;
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 28px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.brand {
+  color: #17212b;
+  font-weight: 700;
+}
+
+nav {
+  display: flex;
+  gap: 18px;
+}
+
+.page {
+  margin: 0 auto;
+  max-width: 1180px;
+  padding: 28px;
+}
+
+.band,
+section {
+  margin-bottom: 28px;
+}
+
+.band {
+  align-items: end;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr minmax(320px, 460px);
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+.search-form,
+.stack {
+  display: grid;
+  gap: 10px;
+}
+
+input,
+select,
+button {
+  border: 1px solid #bcc6d2;
+  border-radius: 6px;
+  font: inherit;
+  min-height: 42px;
+  padding: 9px 12px;
+}
+
+button {
+  background: #166534;
+  border-color: #166534;
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #d9dee5;
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.card img {
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  width: 100%;
+}
+
+.store {
+  color: #52616f;
+  font-size: 0.9rem;
+}
+
+.split {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr 1fr;
+}
+
+table {
+  background: #ffffff;
+  border-collapse: collapse;
+  margin-top: 12px;
+  width: 100%;
+}
+
+th,
+td {
+  border-bottom: 1px solid #d9dee5;
+  padding: 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.notice {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  padding: 10px;
+}
+
+canvas {
+  background: #ffffff;
+  border: 1px solid #d9dee5;
+  border-radius: 8px;
+  max-height: 420px;
+  padding: 12px;
+  width: 100%;
+}
+
+@media (max-width: 760px) {
+  .band,
+  .split {
+    grid-template-columns: 1fr;
+  }
+
+  .page {
+    padding: 18px;
+  }
+}

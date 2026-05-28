@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<section>
+  <h1>{{ product.query }}</h1>
+  <p>{{ product.category or "Uncategorized" }}{% if product.target_price %} · target R$ {{ product.target_price }}{% endif %}</p>
+  <canvas id="priceChart" data-history-url="/api/product/{{ product.id }}/history"></canvas>
+</section>
+
+<section>
+  <h2>History</h2>
+  <table>
+    <tr><th>Store</th><th>Product</th><th>Price</th><th>Collected</th></tr>
+    {% for snapshot in history %}
+    <tr>
+      <td>{{ snapshot.store }}</td>
+      <td><a href="{{ snapshot.url }}" target="_blank">{{ snapshot.title }}</a></td>
+      <td>R$ {{ snapshot.current_price }}</td>
+      <td>{{ snapshot.collected_at.strftime("%Y-%m-%d %H:%M") }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</section>
+<script src="{{ url_for('static', path='/dashboard.js') }}"></script>
+{% endblock %}

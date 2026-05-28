@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="split">
+  <div>
+    <h1>Alert rules</h1>
+    <form class="stack" action="/alerts" method="post">
+      <select name="tracked_product_id" required>
+        {% for product in tracked %}
+        <option value="{{ product.id }}">{{ product.query }}</option>
+        {% endfor %}
+      </select>
+      <select name="rule_type" required>
+        {% for rule_type in rule_types %}
+        <option value="{{ rule_type }}">{{ rule_type }}</option>
+        {% endfor %}
+      </select>
+      <input name="threshold" placeholder="Threshold">
+      <button type="submit">Add rule</button>
+    </form>
+    <table>
+      <tr><th>Product</th><th>Rule</th><th>Threshold</th></tr>
+      {% for rule in rules %}
+      <tr>
+        <td>{{ rule.tracked_product_id }}</td>
+        <td>{{ rule.rule_type }}</td>
+        <td>{{ rule.threshold or "" }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <div>
+    <h2>Alert history</h2>
+    <table>
+      <tr><th>Product</th><th>Price</th><th>Message</th></tr>
+      {% for event in events %}
+      <tr>
+        <td><a href="{{ event['url'] }}" target="_blank">{{ event['title'] }}</a></td>
+        <td>R$ {{ event['current_price'] }}</td>
+        <td>{{ event['message'] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</section>
+{% endblock %}
