@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="flow-head">
+  <div>
+    <h1>Produtos monitorados</h1>
+    <p>Acompanhe buscas salvas, alertas recentes e últimos preços coletados.</p>
+  </div>
+</section>
+
+<section class="split">
+  <div>
+    <h2>Adicionar monitoramento</h2>
+    <form class="stack" action="/tracked" method="post">
+      <input name="query" placeholder="Produto" required>
+      <input name="category" placeholder="Categoria">
+      <input name="target_price" placeholder="Preço alvo">
+      <button type="submit">Adicionar</button>
+    </form>
+    <table>
+      <tr><th>Produto</th><th>Categoria</th><th>Alvo</th></tr>
+      {% for product in tracked %}
+      <tr>
+        <td><a href="/product/{{ product.id }}">{{ product.query }}</a></td>
+        <td>{{ product.category or "" }}</td>
+        <td>{{ product.target_price or "" }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <div>
+    <h2>Alertas recentes</h2>
+    <table>
+      <tr><th>Produto</th><th>Mensagem</th></tr>
+      {% for alert in alerts %}
+      <tr>
+        <td><a href="{{ alert['url'] }}" target="_blank">{{ alert['title'] }}</a></td>
+        <td>{{ alert['message'] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>Últimos preços coletados</h2>
+  <table>
+    <tr><th>Loja</th><th>Produto</th><th>Preço</th><th>Coletado</th></tr>
+    {% for snapshot in snapshots %}
+    <tr>
+      <td>{{ snapshot.store }}</td>
+      <td><a href="{{ snapshot.url }}" target="_blank">{{ snapshot.title }}</a></td>
+      <td>R$ {{ snapshot.current_price }}</td>
+      <td>{{ snapshot.collected_at.strftime("%Y-%m-%d %H:%M") }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</section>
+{% endblock %}

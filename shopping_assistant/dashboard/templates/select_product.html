@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="flow-head">
+  <div>
+    <p class="step-label">Etapa 2 de 3</p>
+    <h1>{{ category.name }}</h1>
+    <p>Escolha um produto ou digite uma busca mais específica.</p>
+  </div>
+  <a class="secondary-link" href="/">Trocar categoria</a>
+</section>
+
+<section class="category-grid">
+  {% for product in category.products %}
+    <form action="/results" method="post">
+      <input type="hidden" name="category" value="{{ category.slug }}">
+      <input type="hidden" name="query" value="{{ product.query }}">
+      <button class="product-option-card" type="submit">
+        <span class="category-name">{{ product.name }}</span>
+        <span class="category-description">{{ product.query }}</span>
+      </button>
+    </form>
+  {% endfor %}
+</section>
+
+<section class="form-panel">
+  <form class="product-form" action="/results" method="post">
+    <input type="hidden" name="category" value="{{ category.slug }}">
+    <label for="query">Busca personalizada</label>
+    <input id="query" name="query" placeholder="{{ category.examples[0] }}" required autofocus>
+    <button type="submit">Buscar ofertas</button>
+  </form>
+</section>
+{% endblock %}

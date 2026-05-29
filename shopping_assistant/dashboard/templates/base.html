@@ -3,16 +3,17 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ title or "Home Shopping Price Assistant" }}</title>
+    <title>{{ title or "Assistente de Compras" }}</title>
     <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
     <header class="topbar">
-      <a class="brand" href="/">Price Assistant</a>
+      <a class="brand" href="/">Assistente de Compras</a>
       <nav>
-        <a href="/">Dashboard</a>
-        <a href="/alerts">Alerts</a>
+        <a href="/">Categorias</a>
+        <a href="/tracked">Monitorados</a>
+        <a href="/alerts">Alertas</a>
       </nav>
     </header>
     <main class="page">

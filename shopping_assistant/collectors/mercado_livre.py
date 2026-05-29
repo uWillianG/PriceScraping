@@ -119,6 +119,7 @@ class MercadoLivreCollector(BaseCollector):
         self, url: str, category: str | None = None
     ) -> list[ProductOffer]:
         try:
+            from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
             from playwright.sync_api import sync_playwright
         except ImportError as exc:
             raise CollectorError(
@@ -138,10 +139,16 @@ class MercadoLivreCollector(BaseCollector):
                 try:
                     page.goto(url, wait_until="domcontentloaded", timeout=30000)
                     page.wait_for_timeout(3000)
-                    page.wait_for_selector(
-                        "li.ui-search-layout__item, div.poly-card, a[href*='MLB']",
-                        timeout=15000,
-                    )
+                    try:
+                        page.wait_for_selector(
+                            "li.ui-search-layout__item, div.poly-card, a[href*='MLB']",
+                            timeout=15000,
+                        )
+                    except PlaywrightTimeoutError:
+                        self.logger.warning(
+                            "Mercado Livre rendered page did not expose expected "
+                            "product selectors; parsing the available HTML."
+                        )
                     html = page.content()
                 finally:
                     browser.close()

@@ -1,90 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="band">
+<section class="flow-head">
   <div>
-    <h1>Home Shopping Deals</h1>
-    <p>Track furniture, appliances, electronics, and home decor prices across configured Brazilian stores.</p>
-  </div>
-  <form class="search-form" action="/search" method="post">
-    <input name="query" placeholder="geladeira frost free" required>
-    <input name="category" placeholder="appliances">
-    <button type="submit">Search</button>
-  </form>
-</section>
-
-{% if search_result %}
-<section>
-  <h2>Search results for "{{ search_result.query }}"</h2>
-  {% if search_result.errors %}
-    <div class="notice">Some stores could not be checked: {{ search_result.errors }}</div>
-  {% endif %}
-  {% if search_result.ranked_offers %}
-    <div class="grid">
-      {% for offer in search_result.ranked_offers[:12] %}
-        <article class="card">
-          {% if offer.image_url %}<img src="{{ offer.image_url }}" alt="">{% endif %}
-          <div class="store">{{ offer.store }}</div>
-          <h3><a href="{{ offer.url }}" target="_blank">{{ offer.title }}</a></h3>
-          <strong>R$ {{ offer.current_price }}</strong>
-          {% if offer.discount_percent %}<span>{{ offer.discount_percent }}% off</span>{% endif %}
-        </article>
-      {% endfor %}
-    </div>
-  {% else %}
-    <div class="notice">
-      No products were found for this search. If no store error is shown above, try a broader query such as "geladeira" or "sofa".
-    </div>
-  {% endif %}
-</section>
-{% endif %}
-
-<section class="split">
-  <div>
-    <h2>Tracked products</h2>
-    <form class="stack" action="/tracked" method="post">
-      <input name="query" placeholder="Product query" required>
-      <input name="category" placeholder="Category">
-      <input name="target_price" placeholder="Target price">
-      <button type="submit">Add product</button>
-    </form>
-    <table>
-      <tr><th>Query</th><th>Category</th><th>Target</th></tr>
-      {% for product in tracked %}
-      <tr>
-        <td><a href="/product/{{ product.id }}">{{ product.query }}</a></td>
-        <td>{{ product.category or "" }}</td>
-        <td>{{ product.target_price or "" }}</td>
-      </tr>
-      {% endfor %}
-    </table>
-  </div>
-
-  <div>
-    <h2>Recent alerts</h2>
-    <table>
-      <tr><th>Product</th><th>Message</th></tr>
-      {% for alert in alerts %}
-      <tr>
-        <td><a href="{{ alert['url'] }}" target="_blank">{{ alert['title'] }}</a></td>
-        <td>{{ alert['message'] }}</td>
-      </tr>
-      {% endfor %}
-    </table>
+    <p class="step-label">Etapa 1 de 3</p>
+    <h1>Escolha uma categoria</h1>
+    <p>Comece pelo tipo de produto que você quer monitorar e comparar.</p>
   </div>
 </section>
 
-<section>
-  <h2>Latest snapshots</h2>
-  <table>
-    <tr><th>Store</th><th>Product</th><th>Price</th><th>Collected</th></tr>
-    {% for snapshot in snapshots %}
-    <tr>
-      <td>{{ snapshot.store }}</td>
-      <td><a href="{{ snapshot.url }}" target="_blank">{{ snapshot.title }}</a></td>
-      <td>R$ {{ snapshot.current_price }}</td>
-      <td>{{ snapshot.collected_at.strftime("%Y-%m-%d %H:%M") }}</td>
-    </tr>
-    {% endfor %}
-  </table>
+<section class="category-grid">
+  {% for category in categories %}
+    <a class="category-card" href="/category/{{ category.slug }}">
+      <span class="category-name">{{ category.name }}</span>
+      <span class="category-description">{{ category.description }}</span>
+      <span class="category-examples">{{ category.examples | join(" · ") }}</span>
+    </a>
+  {% endfor %}
 </section>
 {% endblock %}

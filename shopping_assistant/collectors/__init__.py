@@ -10,12 +10,15 @@ from .shopee import ShopeeCollector
 
 
 def build_default_collectors(settings: Settings):
+    # Temporarily keep only Mercado Livre enabled. The other stores are still
+    # implemented below, but their public pages currently serve anti-bot blocks
+    # unless official API/affiliate endpoints are configured.
     return [
         MercadoLivreCollector(settings),
-        AmazonCollector(settings),
-        MagaluCollector(settings),
-        CasasBahiaCollector(settings),
-        ShopeeCollector(settings),
+        # AmazonCollector(settings),
+        # MagaluCollector(settings),
+        # CasasBahiaCollector(settings),
+        # ShopeeCollector(settings),
     ]
 
 

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="flow-head">
+  <div>
+    <p class="step-label">Etapa 3 de 3</p>
+    <h1>Resultados para "{{ search_result.query }}"</h1>
+    <p>{{ category.name }}</p>
+  </div>
+  <div class="actions">
+    <a class="secondary-link" href="/category/{{ category.slug }}">Nova busca nesta categoria</a>
+    <a class="secondary-link" href="/">Trocar categoria</a>
+  </div>
+</section>
+
+{% if search_result.errors %}
+  <section class="notice">
+    <strong>Algumas lojas não puderam ser consultadas.</strong>
+    <pre>{{ search_result.errors }}</pre>
+  </section>
+{% endif %}
+
+{% if search_result.ranked_offers %}
+  <section class="results-toolbar">
+    <span>{{ search_result.ranked_offers | length }} ofertas encontradas</span>
+    <span>Ordenado pelo menor preço</span>
+  </section>
+
+  <section class="grid">
+    {% for offer in search_result.ranked_offers %}
+      <article class="card">
+        {% if offer.image_url %}<img src="{{ offer.image_url }}" alt="">{% endif %}
+        <div class="store">{{ offer.store }}</div>
+        <h3><a href="{{ offer.url }}" target="_blank">{{ offer.title }}</a></h3>
+        <strong>R$ {{ offer.current_price }}</strong>
+        {% if offer.discount_percent %}<span>{{ offer.discount_percent }}% off</span>{% endif %}
+      </article>
+    {% endfor %}
+  </section>
+{% else %}
+  <section class="notice">
+    Nenhum produto foi encontrado para esta busca. Tente um termo mais amplo ou outra categoria.
+  </section>
+{% endif %}
+{% endblock %}
