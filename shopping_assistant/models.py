@@ -105,6 +105,19 @@ class DealAlert:
 
 
 @dataclass(slots=True)
+class Coupon:
+    store: str
+    title: str
+    description: str
+    url: str
+    code: str | None = None
+    discount_text: str | None = None
+    min_purchase: Decimal | None = None
+    category: str | None = None
+    keywords: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
 class SearchResult:
     query: str
     category: str | None

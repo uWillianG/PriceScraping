@@ -4,6 +4,7 @@ from config import Settings
 
 from .amazon import AmazonCollector
 from .casas_bahia import CasasBahiaCollector
+from .google_shopping import GoogleShoppingCollector
 from .magalu import MagaluCollector
 from .mercado_livre import MercadoLivreCollector
 from .shopee import ShopeeCollector
@@ -15,6 +16,7 @@ def build_default_collectors(settings: Settings):
     # unless official API/affiliate endpoints are configured.
     return [
         MercadoLivreCollector(settings),
+        GoogleShoppingCollector(settings),
         # AmazonCollector(settings),
         # MagaluCollector(settings),
         # CasasBahiaCollector(settings),
@@ -25,6 +27,7 @@ def build_default_collectors(settings: Settings):
 __all__ = [
     "AmazonCollector",
     "CasasBahiaCollector",
+    "GoogleShoppingCollector",
     "MagaluCollector",
     "MercadoLivreCollector",
     "ShopeeCollector",

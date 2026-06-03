@@ -4,41 +4,89 @@
   <div>
     <p class="step-label">Etapa 3 de 3</p>
     <h1>Resultados para "{{ search_result.query }}"</h1>
-    <p>{{ category.name }}</p>
+    <p class="lead">{{ category.name }}</p>
   </div>
   <div class="actions">
-    <a class="secondary-link" href="/category/{{ category.slug }}">Nova busca nesta categoria</a>
-    <a class="secondary-link" href="/">Trocar categoria</a>
+    <a class="button button-secondary" href="/category/{{ category.slug }}">
+      <i data-lucide="refresh-cw"></i>
+      <span>Nova busca</span>
+    </a>
+    <a class="button button-ghost" href="/">
+      <i data-lucide="layout-grid"></i>
+      <span>Categorias</span>
+    </a>
   </div>
 </section>
 
 {% if search_result.errors %}
-  <section class="notice">
-    <strong>Algumas lojas não puderam ser consultadas.</strong>
-    <pre>{{ search_result.errors }}</pre>
+  <section class="notice warning">
+    <div class="notice-icon" aria-hidden="true"><i data-lucide="triangle-alert"></i></div>
+    <div>
+      <strong>Algumas lojas não puderam ser consultadas.</strong>
+      <pre>{{ search_result.errors }}</pre>
+    </div>
   </section>
 {% endif %}
 
 {% if search_result.ranked_offers %}
   <section class="results-toolbar">
-    <span>{{ search_result.ranked_offers | length }} ofertas encontradas</span>
-    <span>Ordenado pelo menor preço</span>
+    <div>
+      <strong>{{ search_result.ranked_offers | length }}</strong>
+      <span>ofertas encontradas</span>
+    </div>
+    <span class="toolbar-pill"><i data-lucide="arrow-down-up"></i> Menor preço primeiro</span>
   </section>
 
   <section class="grid">
     {% for offer in search_result.ranked_offers %}
-      <article class="card">
-        {% if offer.image_url %}<img src="{{ offer.image_url }}" alt="">{% endif %}
-        <div class="store">{{ offer.store }}</div>
-        <h3><a href="{{ offer.url }}" target="_blank">{{ offer.title }}</a></h3>
-        <strong>R$ {{ offer.current_price }}</strong>
-        {% if offer.discount_percent %}<span>{{ offer.discount_percent }}% off</span>{% endif %}
+      <article class="card offer-card {% if loop.first %}is-best{% endif %}">
+        <div class="offer-rank">
+          <span>#{{ loop.index }}</span>
+          {% if loop.first %}<strong>Melhor preço</strong>{% endif %}
+        </div>
+        <div class="product-media">
+          {% if offer.image_url %}
+            <img src="{{ offer.image_url }}" alt="{{ offer.title }}">
+          {% else %}
+            <i data-lucide="package-search" aria-hidden="true"></i>
+          {% endif %}
+        </div>
+        <div class="offer-content">
+          <div class="store"><i data-lucide="store"></i>{{ offer.store }}</div>
+          <h3><a href="{{ offer.url }}" target="_blank" rel="noreferrer">{{ offer.title }}</a></h3>
+          <div class="price-row">
+            <strong>R$ {{ offer.current_price }}</strong>
+            {% if offer.original_price %}<span>de R$ {{ offer.original_price }}</span>{% endif %}
+          </div>
+          {% if offer.discount_percent %}<span class="discount-badge">{{ offer.discount_percent }}% off</span>{% endif %}
+        </div>
+        {% if coupons_by_url and coupons_by_url.get(offer.url) %}
+          <div class="coupon-list">
+            {% for coupon in coupons_by_url.get(offer.url) %}
+              <a class="coupon" href="{{ coupon.url }}" target="_blank" rel="noreferrer">
+                <span>{{ coupon.discount_text or coupon.title }}</span>
+                {% if coupon.code %}<code>{{ coupon.code }}</code>{% endif %}
+                {% if coupon.min_purchase %}<small>mínimo R$ {{ coupon.min_purchase }}</small>{% endif %}
+              </a>
+            {% endfor %}
+          </div>
+        {% endif %}
+        <a class="button button-primary button-full" href="{{ offer.url }}" target="_blank" rel="noreferrer">
+          <span>Ver oferta</span>
+          <i data-lucide="external-link"></i>
+        </a>
       </article>
     {% endfor %}
   </section>
 {% else %}
-  <section class="notice">
-    Nenhum produto foi encontrado para esta busca. Tente um termo mais amplo ou outra categoria.
+  <section class="empty-state">
+    <i data-lucide="search-x" aria-hidden="true"></i>
+    <h2>Nenhuma oferta encontrada</h2>
+    <p>Tente um termo mais amplo ou selecione outra categoria.</p>
+    <a class="button button-primary" href="/category/{{ category.slug }}">
+      <i data-lucide="search"></i>
+      <span>Nova busca</span>
+    </a>
   </section>
 {% endif %}
 {% endblock %}

@@ -4,9 +4,12 @@
   <div>
     <p class="step-label">Etapa 2 de 3</p>
     <h1>{{ category.name }}</h1>
-    <p>Escolha um produto ou digite uma busca mais específica.</p>
+    <p class="lead">Parta de uma busca pronta ou refine o termo para comparar ofertas mais alinhadas.</p>
   </div>
-  <a class="secondary-link" href="/">Trocar categoria</a>
+  <a class="button button-secondary" href="/">
+    <i data-lucide="arrow-left"></i>
+    <span>Trocar categoria</span>
+  </a>
 </section>
 
 <section class="category-grid">
@@ -15,19 +18,29 @@
       <input type="hidden" name="category" value="{{ category.slug }}">
       <input type="hidden" name="query" value="{{ product.query }}">
       <button class="product-option-card" type="submit">
+        <span class="card-icon compact" aria-hidden="true"><i data-lucide="search"></i></span>
         <span class="category-name">{{ product.name }}</span>
         <span class="category-description">{{ product.query }}</span>
+        <span class="category-cta">Comparar <i data-lucide="arrow-right"></i></span>
       </button>
     </form>
   {% endfor %}
 </section>
 
 <section class="form-panel">
+  <div>
+    <p class="panel-label">Busca personalizada</p>
+    <h2>Refinar pesquisa</h2>
+    <p>Use marca, modelo, tamanho ou característica principal para melhorar a comparação.</p>
+  </div>
   <form class="product-form" action="/results" method="post">
     <input type="hidden" name="category" value="{{ category.slug }}">
-    <label for="query">Busca personalizada</label>
+    <label for="query">Termo de busca</label>
     <input id="query" name="query" placeholder="{{ category.examples[0] }}" required autofocus>
-    <button type="submit">Buscar ofertas</button>
+    <button class="button button-primary" type="submit">
+      <i data-lucide="search"></i>
+      <span>Buscar ofertas</span>
+    </button>
   </form>
 </section>
 {% endblock %}

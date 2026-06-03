@@ -4,16 +4,22 @@
   <div>
     <p class="step-label">Etapa 1 de 3</p>
     <h1>Escolha uma categoria</h1>
-    <p>Comece pelo tipo de produto que você quer monitorar e comparar.</p>
+    <p class="lead">Compare ofertas, encontre cupons relevantes e salve buscas para acompanhar preço ao longo do tempo.</p>
+  </div>
+  <div class="flow-summary" aria-label="Resumo do fluxo">
+    <span><strong>{{ categories | length }}</strong> categorias</span>
+    <span><strong>3</strong> etapas</span>
   </div>
 </section>
 
 <section class="category-grid">
   {% for category in categories %}
     <a class="category-card" href="/category/{{ category.slug }}">
+      <span class="card-icon" aria-hidden="true"><i data-lucide="{{ category.icon | default('shopping-bag') }}"></i></span>
       <span class="category-name">{{ category.name }}</span>
       <span class="category-description">{{ category.description }}</span>
       <span class="category-examples">{{ category.examples | join(" · ") }}</span>
+      <span class="category-cta">Explorar <i data-lucide="arrow-right"></i></span>
     </a>
   {% endfor %}
 </section>

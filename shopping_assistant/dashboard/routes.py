@@ -11,6 +11,7 @@ from shopping_assistant.collectors import build_default_collectors
 from shopping_assistant.db.repositories import PriceRepository
 from shopping_assistant.models import AlertRule, AlertRuleType, TrackedProduct
 from shopping_assistant.services.comparison import PriceComparisonEngine
+from shopping_assistant.services.coupons import MercadoLivreCouponService
 from shopping_assistant.services.history import PriceHistoryTracker
 
 
@@ -21,6 +22,7 @@ repository = PriceRepository(settings.database_path)
 CATEGORIES = [
     {
         "slug": "appliances",
+        "icon": "refrigerator",
         "name": "Eletrodomésticos",
         "description": "Geladeira, fogão, micro-ondas, lava e seca e climatização.",
         "examples": ["geladeira frost free", "micro-ondas midea", "lava e seca"],
@@ -35,6 +37,7 @@ CATEGORIES = [
     },
     {
         "slug": "furniture",
+        "icon": "armchair",
         "name": "Móveis",
         "description": "Sofás, mesas, cadeiras, camas, armários e estantes.",
         "examples": ["sofa retratil", "mesa de jantar", "guarda roupa casal"],
@@ -49,6 +52,7 @@ CATEGORIES = [
     },
     {
         "slug": "electronics",
+        "icon": "tv",
         "name": "Eletrônicos",
         "description": "TVs, caixas de som, automação residencial e acessórios.",
         "examples": ["smart tv 55", "soundbar", "camera wifi"],
@@ -63,6 +67,7 @@ CATEGORIES = [
     },
     {
         "slug": "home_decor",
+        "icon": "lamp",
         "name": "Decoração",
         "description": "Luminárias, tapetes, quadros, cortinas e organização.",
         "examples": ["tapete sala", "luminaria pendente", "cortina blackout"],
@@ -206,12 +211,18 @@ async def results(request: Request, query: str = Form(...), category: str = Form
     engine = PriceComparisonEngine(build_default_collectors(settings))
     result = await engine.search_all(query.strip(), category=category)
     PriceHistoryTracker(repository).save_snapshots(result.ranked_offers)
+    coupons_by_url = await MercadoLivreCouponService(settings).coupons_for_offers(
+        result.ranked_offers,
+        query=query.strip(),
+        category=category,
+    )
     return templates.TemplateResponse(
         request,
         "results.html",
         {
             "category": category_config,
             "search_result": result,
+            "coupons_by_url": coupons_by_url,
         },
     )
 

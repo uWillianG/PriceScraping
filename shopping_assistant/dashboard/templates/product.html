@@ -1,24 +1,58 @@
 {% extends "base.html" %}
 {% block content %}
-<section>
-  <h1>{{ product.query }}</h1>
-  <p>{{ product.category or "Uncategorized" }}{% if product.target_price %} · target R$ {{ product.target_price }}{% endif %}</p>
-  <canvas id="priceChart" data-history-url="/api/product/{{ product.id }}/history"></canvas>
+<section class="flow-head">
+  <div>
+    <p class="step-label">Produto monitorado</p>
+    <h1>{{ product.query }}</h1>
+    <div class="meta-row">
+      <span>{{ product.category or "Sem categoria" }}</span>
+      {% if product.target_price %}<span>Alvo R$ {{ product.target_price }}</span>{% endif %}
+    </div>
+  </div>
+  <a class="button button-secondary" href="/tracked">
+    <i data-lucide="arrow-left"></i>
+    <span>Monitorados</span>
+  </a>
 </section>
 
-<section>
-  <h2>History</h2>
-  <table>
-    <tr><th>Store</th><th>Product</th><th>Price</th><th>Collected</th></tr>
-    {% for snapshot in history %}
-    <tr>
-      <td>{{ snapshot.store }}</td>
-      <td><a href="{{ snapshot.url }}" target="_blank">{{ snapshot.title }}</a></td>
-      <td>R$ {{ snapshot.current_price }}</td>
-      <td>{{ snapshot.collected_at.strftime("%Y-%m-%d %H:%M") }}</td>
-    </tr>
-    {% endfor %}
-  </table>
+<section class="chart-panel">
+  <div class="panel-heading row-heading">
+    <div>
+      <p class="panel-label">Histórico</p>
+      <h2>Evolução de preço</h2>
+    </div>
+    <span class="toolbar-pill">{{ history | length }} registros</span>
+  </div>
+  <div class="chart-shell">
+    <canvas id="priceChart" data-history-url="/api/product/{{ product.id }}/history"></canvas>
+  </div>
+</section>
+
+<section class="surface-panel">
+  <div class="panel-heading">
+    <p class="panel-label">Coletas</p>
+    <h2>Histórico completo</h2>
+  </div>
+  {% if history %}
+    <div class="table-shell">
+      <table>
+        <tr><th>Loja</th><th>Produto</th><th>Preço</th><th>Coletado</th></tr>
+        {% for snapshot in history %}
+        <tr>
+          <td>{{ snapshot.store }}</td>
+          <td><a href="{{ snapshot.url }}" target="_blank" rel="noreferrer">{{ snapshot.title }}</a></td>
+          <td><strong>R$ {{ snapshot.current_price }}</strong></td>
+          <td>{{ snapshot.collected_at.strftime("%Y-%m-%d %H:%M") }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-inline">
+      <i data-lucide="line-chart" aria-hidden="true"></i>
+      <span>Nenhum histórico coletado para este produto.</span>
+    </div>
+  {% endif %}
 </section>
 <script src="{{ url_for('static', path='/dashboard.js') }}"></script>
 {% endblock %}

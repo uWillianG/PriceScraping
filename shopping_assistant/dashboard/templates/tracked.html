@@ -3,57 +3,122 @@
 <section class="flow-head">
   <div>
     <h1>Produtos monitorados</h1>
-    <p>Acompanhe buscas salvas, alertas recentes e últimos preços coletados.</p>
+    <p class="lead">Acompanhe buscas salvas, alertas recentes e os últimos preços coletados.</p>
   </div>
+  <a class="button button-secondary" href="/">
+    <i data-lucide="plus"></i>
+    <span>Nova busca</span>
+  </a>
 </section>
 
 <section class="split">
-  <div>
-    <h2>Adicionar monitoramento</h2>
+  <div class="surface-panel">
+    <div class="panel-heading">
+      <p class="panel-label">Monitoramento</p>
+      <h2>Adicionar produto</h2>
+    </div>
     <form class="stack" action="/tracked" method="post">
-      <input name="query" placeholder="Produto" required>
-      <input name="category" placeholder="Categoria">
-      <input name="target_price" placeholder="Preço alvo">
-      <button type="submit">Adicionar</button>
+      <label>
+        Produto
+        <input name="query" placeholder="geladeira frost free" required>
+      </label>
+      <label>
+        Categoria
+        <input name="category" placeholder="appliances">
+      </label>
+      <label>
+        Preço alvo
+        <input name="target_price" placeholder="2500.00" inputmode="decimal">
+      </label>
+      <button class="button button-primary" type="submit">
+        <i data-lucide="radar"></i>
+        <span>Adicionar</span>
+      </button>
     </form>
-    <table>
-      <tr><th>Produto</th><th>Categoria</th><th>Alvo</th></tr>
-      {% for product in tracked %}
-      <tr>
-        <td><a href="/product/{{ product.id }}">{{ product.query }}</a></td>
-        <td>{{ product.category or "" }}</td>
-        <td>{{ product.target_price or "" }}</td>
-      </tr>
-      {% endfor %}
-    </table>
   </div>
 
-  <div>
-    <h2>Alertas recentes</h2>
-    <table>
-      <tr><th>Produto</th><th>Mensagem</th></tr>
-      {% for alert in alerts %}
-      <tr>
-        <td><a href="{{ alert['url'] }}" target="_blank">{{ alert['title'] }}</a></td>
-        <td>{{ alert['message'] }}</td>
-      </tr>
-      {% endfor %}
-    </table>
+  <div class="surface-panel">
+    <div class="panel-heading">
+      <p class="panel-label">Sinais</p>
+      <h2>Alertas recentes</h2>
+    </div>
+    {% if alerts %}
+      <div class="table-shell">
+        <table>
+          <tr><th>Produto</th><th>Mensagem</th></tr>
+          {% for alert in alerts %}
+          <tr>
+            <td><a href="{{ alert['url'] }}" target="_blank" rel="noreferrer">{{ alert['title'] }}</a></td>
+            <td>{{ alert['message'] }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-inline">
+        <i data-lucide="bell-off" aria-hidden="true"></i>
+        <span>Nenhum alerta recente.</span>
+      </div>
+    {% endif %}
   </div>
 </section>
 
-<section>
-  <h2>Últimos preços coletados</h2>
-  <table>
-    <tr><th>Loja</th><th>Produto</th><th>Preço</th><th>Coletado</th></tr>
-    {% for snapshot in snapshots %}
-    <tr>
-      <td>{{ snapshot.store }}</td>
-      <td><a href="{{ snapshot.url }}" target="_blank">{{ snapshot.title }}</a></td>
-      <td>R$ {{ snapshot.current_price }}</td>
-      <td>{{ snapshot.collected_at.strftime("%Y-%m-%d %H:%M") }}</td>
-    </tr>
-    {% endfor %}
-  </table>
+<section class="surface-panel">
+  <div class="panel-heading row-heading">
+    <div>
+      <p class="panel-label">Portfólio</p>
+      <h2>Buscas salvas</h2>
+    </div>
+    <span class="toolbar-pill">{{ tracked | length }} itens</span>
+  </div>
+  {% if tracked %}
+    <div class="table-shell">
+      <table>
+        <tr><th>Produto</th><th>Categoria</th><th>Alvo</th></tr>
+        {% for product in tracked %}
+        <tr>
+          <td><a href="/product/{{ product.id }}">{{ product.query }}</a></td>
+          <td>{{ product.category or "Sem categoria" }}</td>
+          <td>{% if product.target_price %}R$ {{ product.target_price }}{% else %}-{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-inline">
+      <i data-lucide="bookmark-plus" aria-hidden="true"></i>
+      <span>Nenhum produto monitorado ainda.</span>
+    </div>
+  {% endif %}
+</section>
+
+<section class="surface-panel">
+  <div class="panel-heading row-heading">
+    <div>
+      <p class="panel-label">Coletas</p>
+      <h2>Últimos preços coletados</h2>
+    </div>
+    <span class="toolbar-pill">{{ snapshots | length }} registros</span>
+  </div>
+  {% if snapshots %}
+    <div class="table-shell">
+      <table>
+        <tr><th>Loja</th><th>Produto</th><th>Preço</th><th>Coletado</th></tr>
+        {% for snapshot in snapshots %}
+        <tr>
+          <td>{{ snapshot.store }}</td>
+          <td><a href="{{ snapshot.url }}" target="_blank" rel="noreferrer">{{ snapshot.title }}</a></td>
+          <td><strong>R$ {{ snapshot.current_price }}</strong></td>
+          <td>{{ snapshot.collected_at.strftime("%Y-%m-%d %H:%M") }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-inline">
+      <i data-lucide="database" aria-hidden="true"></i>
+      <span>Nenhuma coleta registrada.</span>
+    </div>
+  {% endif %}
 </section>
 {% endblock %}

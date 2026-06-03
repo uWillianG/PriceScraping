@@ -1,0 +1,13 @@
+[
+  {
+    "store": "Mercado Livre",
+    "title": "Exemplo: R$ 50 OFF em eletrodomésticos",
+    "description": "Cupom de exemplo para compras acima de R$ 500. Edite este arquivo e salve como coupons/mercado_livre.json.",
+    "url": "https://www.mercadolivre.com.br/cupons/filter",
+    "code": "EXEMPLO50",
+    "discount_text": "R$ 50 OFF",
+    "min_purchase": "500.00",
+    "category": "appliances",
+    "keywords": ["geladeira", "micro-ondas", "fogão", "lava e seca"]
+  }
+]

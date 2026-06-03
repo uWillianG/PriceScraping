@@ -1,46 +1,112 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="split">
+<section class="flow-head">
   <div>
-    <h1>Alert rules</h1>
+    <h1>Alertas de preço</h1>
+    <p class="lead">Configure regras para reagir a preço alvo, desconto relevante ou menor preço histórico.</p>
+  </div>
+  <a class="button button-secondary" href="/tracked">
+    <i data-lucide="radar"></i>
+    <span>Monitorados</span>
+  </a>
+</section>
+
+<section class="split">
+  <div class="surface-panel">
+    <div class="panel-heading">
+      <p class="panel-label">Regras</p>
+      <h2>Nova regra</h2>
+    </div>
     <form class="stack" action="/alerts" method="post">
-      <select name="tracked_product_id" required>
-        {% for product in tracked %}
-        <option value="{{ product.id }}">{{ product.query }}</option>
-        {% endfor %}
-      </select>
-      <select name="rule_type" required>
-        {% for rule_type in rule_types %}
-        <option value="{{ rule_type }}">{{ rule_type }}</option>
-        {% endfor %}
-      </select>
-      <input name="threshold" placeholder="Threshold">
-      <button type="submit">Add rule</button>
+      <label>
+        Produto monitorado
+        <select name="tracked_product_id" required {% if not tracked %}disabled{% endif %}>
+          {% if not tracked %}
+            <option>Nenhum produto monitorado</option>
+          {% endif %}
+          {% for product in tracked %}
+          <option value="{{ product.id }}">{{ product.query }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>
+        Tipo de regra
+        <select name="rule_type" required>
+          {% for rule_type in rule_types %}
+          <option value="{{ rule_type }}">
+            {% if rule_type == "target_price" %}Preço alvo{% elif rule_type == "discount_percent" %}Percentual de desconto{% elif rule_type == "historical_low" %}Menor preço histórico{% else %}{{ rule_type }}{% endif %}
+          </option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>
+        Limite
+        <input name="threshold" placeholder="2500.00" inputmode="decimal">
+      </label>
+      <button class="button button-primary" type="submit" {% if not tracked %}disabled{% endif %}>
+        <i data-lucide="bell-plus"></i>
+        <span>Adicionar regra</span>
+      </button>
     </form>
-    <table>
-      <tr><th>Product</th><th>Rule</th><th>Threshold</th></tr>
-      {% for rule in rules %}
-      <tr>
-        <td>{{ rule.tracked_product_id }}</td>
-        <td>{{ rule.rule_type }}</td>
-        <td>{{ rule.threshold or "" }}</td>
-      </tr>
-      {% endfor %}
-    </table>
   </div>
 
-  <div>
-    <h2>Alert history</h2>
-    <table>
-      <tr><th>Product</th><th>Price</th><th>Message</th></tr>
-      {% for event in events %}
-      <tr>
-        <td><a href="{{ event['url'] }}" target="_blank">{{ event['title'] }}</a></td>
-        <td>R$ {{ event['current_price'] }}</td>
-        <td>{{ event['message'] }}</td>
-      </tr>
-      {% endfor %}
-    </table>
+  <div class="surface-panel">
+    <div class="panel-heading">
+      <p class="panel-label">Histórico</p>
+      <h2>Disparos recentes</h2>
+    </div>
+    {% if events %}
+      <div class="table-shell">
+        <table>
+          <tr><th>Produto</th><th>Preço</th><th>Mensagem</th></tr>
+          {% for event in events %}
+          <tr>
+            <td><a href="{{ event['url'] }}" target="_blank" rel="noreferrer">{{ event['title'] }}</a></td>
+            <td><strong>R$ {{ event['current_price'] }}</strong></td>
+            <td>{{ event['message'] }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-inline">
+        <i data-lucide="bell-off" aria-hidden="true"></i>
+        <span>Nenhum alerta disparado.</span>
+      </div>
+    {% endif %}
   </div>
+</section>
+
+<section class="surface-panel">
+  <div class="panel-heading row-heading">
+    <div>
+      <p class="panel-label">Ativas e inativas</p>
+      <h2>Regras cadastradas</h2>
+    </div>
+    <span class="toolbar-pill">{{ rules | length }} regras</span>
+  </div>
+  {% if rules %}
+    <div class="table-shell">
+      <table>
+        <tr><th>Produto</th><th>Regra</th><th>Limite</th></tr>
+        {% for rule in rules %}
+        <tr>
+          <td>#{{ rule.tracked_product_id }}</td>
+          <td>
+            <span class="rule-badge">
+              {% if rule.rule_type == "target_price" %}Preço alvo{% elif rule.rule_type == "discount_percent" %}Desconto{% elif rule.rule_type == "historical_low" %}Menor histórico{% else %}{{ rule.rule_type }}{% endif %}
+            </span>
+          </td>
+          <td>{{ rule.threshold or "-" }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-inline">
+      <i data-lucide="list-plus" aria-hidden="true"></i>
+      <span>Nenhuma regra cadastrada.</span>
+    </div>
+  {% endif %}
 </section>
 {% endblock %}

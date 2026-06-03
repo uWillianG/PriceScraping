@@ -1,6 +1,7 @@
 from config import settings
 from shopping_assistant.collectors.amazon import AmazonCollector
 from shopping_assistant.collectors.casas_bahia import CasasBahiaCollector
+from shopping_assistant.collectors.google_shopping import GoogleShoppingCollector
 from shopping_assistant.collectors.magalu import MagaluCollector
 from shopping_assistant.collectors.shopee import ShopeeCollector
 
@@ -52,3 +53,19 @@ def test_shopee_extracts_offer_from_html():
     offers = ShopeeCollector(settings).extract_offers(html, "home decor")
     assert len(offers) == 1
     assert offers[0].store == "Shopee Brasil"
+
+
+def test_google_shopping_extracts_offer_from_html():
+    html = """
+    <div class="sh-dgr__grid-result">
+      <a href="/url?q=https%3A%2F%2Fexample.com%2Fproduto"></a>
+      <h3>Micro-ondas Midea</h3>
+      <span>R$ 499,90</span>
+      <div class="aULzUe">Loja Teste</div>
+    </div>
+    """
+    offers = GoogleShoppingCollector(settings).extract_offers(html, "appliances")
+    assert len(offers) == 1
+    assert offers[0].store == "Google Shopping - Loja Teste"
+    assert offers[0].url == "https://example.com/produto"
+    assert str(offers[0].current_price) == "499.90"
